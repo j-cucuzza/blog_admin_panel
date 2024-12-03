@@ -72,7 +72,7 @@ a {
 @media only screen and (max-width: 768px) {
   
   .new-form {
-    margin: 1rem 0rem;
+    margin: 2rem 1rem !important;
   }
 }
 

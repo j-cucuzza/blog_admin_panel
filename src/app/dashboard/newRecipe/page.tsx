@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import styles from "../../page.module.css";
 import * as api from "../../util/api"
 import { CreateRecipe, Tag } from "@/app/types";
+import Footer from "@/app/footer";
 
 const baseRecipe: CreateRecipe = {
     name: "",
@@ -59,10 +60,11 @@ const NewRecipe = () =>  {
     }, [])
 
     return (
+        <>
         <div className={styles.page}style={{display: "flex", minHeight: "100vh", flexDirection: "column"}}>
             <div className="container">
                 <button className="button is-primary" onClick={() => router.back()}>Back</button>
-                <div className={styles.main}>
+                <div>
                     <div className="new-form">
                         <div className="field">
                             <label className="label">Name</label>
@@ -127,6 +129,8 @@ const NewRecipe = () =>  {
                 </div>
             </div>
         </div>
+        <Footer />
+        </>
     )
 
 }

@@ -7,11 +7,12 @@ import Tabs from "./tabs";
 import Recipes from "./recipes";
 import Reviews from "./reviews";
 import Posts from "./posts";
+import Footer from "../footer";
 
 const Dashboard = () => {
     const router = useRouter()
     const [active, setActive] = useState("recipes")
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     
     useEffect(() => {
         api.validateToken()
@@ -43,6 +44,7 @@ const Dashboard = () => {
             }
             </div>
             <br />
+            <Footer />
         </>
     )
 }
