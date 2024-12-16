@@ -1,4 +1,4 @@
-import { CreateRecipe } from "../types"
+import { CreateRecipe, CreateReview } from "../types"
 
 const API_ROOT = "https://www.dippingsauce.net/api"
 // const API_ROOT = "http://127.0.0.1:8000"
@@ -252,6 +252,77 @@ const getReviews = () => {
     })    
 }
 
+const createReview = (body: CreateReview) => {
+    const endpoint = "/reviews/create/"
+
+    const token = sessionStorage.getItem("token")
+    const headers = {
+        'Content-Type': 'application/json',
+        accept: "application/json",
+        Authorization: "Bearer " + token
+    }
+
+    const newBody = new URLSearchParams()
+    newBody.append("name", body.name)
+    newBody.append("address", body.address.toString())
+    newBody.append("visited", body.visited.toString())
+    newBody.append("rating", body.rating ? body.rating.toString() : "")
+    newBody.append("cuisine_id", body.cuisine_id.toString())
+    newBody.append("notes", body.notes)
+
+
+
+    return fetch(`${API_ROOT}${endpoint}`, 
+    {
+        method: APIMethod.post,
+        headers,
+        body: JSON.stringify(body),
+    })
+    .then(r => {
+        if (r.ok) {
+            return r.json()
+        } else if (r.status === 402) {
+            throw new ApiError(ApiErrors.LimitExceeded, "")
+        }
+        let err
+        r.json().then().then(json =>{
+            err = json
+        })
+        throw new ApiError(ApiErrors.CallFailed, err)
+    })
+
+
+}
+
+
+const deleteReview = (id: number) => {
+    const endpoint = `/reviews/${id}`
+    const token = sessionStorage.getItem('token')
+
+    const headers = {
+        Authorization: "Bearer " + token
+    }
+
+    return fetch(`${API_ROOT}${endpoint}`,
+        {
+            headers,
+            method: APIMethod.delete,
+        })
+        .then(r => {
+            if (r.ok) {
+                return r.json()
+            } else if (r.status === 402) {
+                throw new ApiError(ApiErrors.LimitExceeded, "")
+            }
+            let err
+            r.json().then().then(json =>{
+                err = json
+            })
+            throw new ApiError(ApiErrors.CallFailed, err)
+    })
+
+}
+
 const getCuisines = () => {
     const endpoint = "/reviews/cuisines/"
 
@@ -273,6 +344,8 @@ const getCuisines = () => {
         throw new ApiError(ApiErrors.CallFailed, err)
 }) 
 
+
+
 }
 export {
     login,
@@ -282,5 +355,7 @@ export {
     createRecipe,
     deleteRecipe,
     getReviews,
+    createReview,
+    deleteReview,
     getCuisines
 }

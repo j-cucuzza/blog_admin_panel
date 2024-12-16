@@ -49,7 +49,6 @@ type CreateReview = {
     visited: boolean,
     rating: number | null,
     notes: string,
-    id: number,
     cuisine_id: number,
 }
 
