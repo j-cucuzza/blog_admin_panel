@@ -19,11 +19,11 @@ const Tabs = (props: TabsProps) => {
                     <span>Reviews</span>
                 </a>
                 </li>
-                <li className={active === "posts" ? "is-active" : ""}>
+                {/* <li className={active === "posts" ? "is-active" : ""}>
                 <a onClick={() => setActive("posts")}>
                     <span>Posts</span>
                 </a>
-                </li>
+                </li> */}
             </ul>
         </header>
     )

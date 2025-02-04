@@ -35,7 +35,15 @@ const Reviews = () => {
     }, [])
 
     const handleDeleteReview = (id: number) => {
-
+        api.deleteReview(id)
+            .then(r => {
+                setReviews(reviews.filter((r) => r.id !== modalMetaData.id))
+                setModalMetaData(defaultMetaData)
+                setModalActive(false)
+            })
+            .catch((e) => {
+                //TODO
+            })
     }
 
     const handleRenderRating = (score: number) => {
@@ -90,7 +98,10 @@ const Reviews = () => {
                         <br />
                         <nav className="level is-mobile">
                             <button className="button">Edit</button>
-                            <button className="button">Delete</button>
+                            <button className="button" onClick={() => {
+                                setModalActive(true)
+                                setModalMetaData({...modalMetaData, name: r.name, id: r.id})
+                            }}>Delete</button>
                         </nav>
                     </div>
                 </div>
