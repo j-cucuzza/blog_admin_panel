@@ -112,6 +112,26 @@ const validateToken = () => {
  *  recipes
  * 
  */
+const getRecipe = (id: string) => {
+    const endpoint = `/recipes/${id}`
+
+    return fetch(`${API_ROOT}${endpoint}`, 
+        {
+            method: APIMethod.get,
+        })
+        .then(r => {
+            if (r.ok) {
+                return r.json()
+            } else if (r.status === 402) {
+                throw new ApiError(ApiErrors.LimitExceeded, "")
+            }
+            let err
+            r.json().then().then(json =>{
+                err = json
+            })
+            throw new ApiError(ApiErrors.CallFailed, err)
+    })
+}
 const getRecipes = () => {
     const endpoint = "/recipes/all/"    
 
@@ -143,14 +163,14 @@ const createRecipe = (body: CreateRecipe) => {
         Authorization: "Bearer " + token
     }
 
-    const newBody = new URLSearchParams()
-    newBody.append("name", body.name)
-    newBody.append("servings", body.servings.toString())
-    newBody.append("calories", body.calories.toString())
-    newBody.append("protein", body.protein.toString())
-    newBody.append("tag_id", body.tag_id.toString())
-    newBody.append("ingredients", body.ingredients)
-    newBody.append("instructions", body.instructions)
+    // const newBody = new URLSearchParams()
+    // newBody.append("name", body.name)
+    // newBody.append("servings", body.servings.toString())
+    // newBody.append("calories", body.calories.toString())
+    // newBody.append("protein", body.protein.toString())
+    // newBody.append("tag_id", body.tag_id.toString())
+    // newBody.append("ingredients", body.ingredients)
+    // newBody.append("instructions", body.instructions)
 
 
 
@@ -158,6 +178,49 @@ const createRecipe = (body: CreateRecipe) => {
     {
         method: APIMethod.post,
         headers,
+        body: JSON.stringify(body),
+    })
+    .then(r => {
+        if (r.ok) {
+            return r.json()
+        } else if (r.status === 402) {
+            throw new ApiError(ApiErrors.LimitExceeded, "")
+        }
+        let err
+        r.json().then().then(json =>{
+            err = json
+        })
+        throw new ApiError(ApiErrors.CallFailed, err)
+    })
+
+
+}
+
+const editRecipe = (body: CreateRecipe, id: string) => {
+    const endpoint = `/recipes/edit/${id}`
+
+    const token = sessionStorage.getItem("token")
+    const headers = {
+        'Content-Type': 'application/json',
+        accept: "application/json",
+        Authorization: "Bearer " + token
+    }
+
+    
+    // const newBody = new URLSearchParams()
+    // newBody.append("name", body.name)
+    // newBody.append("servings", body.servings.toString())
+    // newBody.append("calories", body.calories.toString())
+    // newBody.append("protein", body.protein.toString())
+    // newBody.append("tag_id", body.tag_id.toString())
+    // newBody.append("ingredients", body.ingredients)
+    // newBody.append("instructions", body.instructions)
+
+    
+    return fetch(`${API_ROOT}${endpoint}`, 
+    {
+        headers,
+        method: APIMethod.post,
         body: JSON.stringify(body),
     })
     .then(r => {
@@ -350,9 +413,11 @@ const getCuisines = () => {
 export {
     login,
     validateToken,
+    getRecipe,
     getRecipes,
     getTags,
     createRecipe,
+    editRecipe,
     deleteRecipe,
     getReviews,
     createReview,

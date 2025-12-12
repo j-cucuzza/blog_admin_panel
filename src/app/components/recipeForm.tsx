@@ -1,47 +1,20 @@
-'use client'
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import styles from "../../page.module.css";
-import * as api from "../../util/api"
+import styles from "@/app/page.module.css";
+import * as api from "@/app/util/api"
 import { CreateRecipe, Tag } from "@/app/types";
-import Footer from "@/app/footer";
-import RecipeForm from "@/app/components/recipeForm";
 
-const baseRecipe: CreateRecipe = {
-    name: "",
-    servings: 0,
-    calories: 0,
-    protein: 0,
-    ingredients: "| Quantity | Unit | Name |\n| --- | --- | --- |\n",
-    instructions: "",
-    tag_id: 0,
-}
+type RecipeFormProps =
+    {
+        initialRecipe: CreateRecipe,
+        handleRecipe: (r: CreateRecipe) => (void)
+    }
 
-const NewRecipe = () =>  {
+const RecipeForm = (props: RecipeFormProps) => {
     const router = useRouter()
     const [loading, setLoading] = useState(true)
     const [tags, setTags] = useState<Tag[]>([])
-    const [recipe, setRecipe] = useState(baseRecipe)
-    const [error, setError] = useState("")
-
-    const handleCreateRecipe = (newR: CreateRecipe) => {
-        api.validateToken()
-        .then(r => {
-            if (r.error === 404) {
-                router.push("/")
-            } else {
-                api.createRecipe(newR)
-                .then((r) => {
-                    router.push("/dashboard")
-                })
-                .catch((e) => {
-                    console.log(e)
-                    setError(e)
-                    // TODO
-                })
-            }
-        })
-    }
+    const [recipe, setRecipe] = useState(props.initialRecipe)
 
     useEffect(() => {
         api.validateToken()
@@ -63,7 +36,7 @@ const NewRecipe = () =>  {
 
     return (
         <>
-        {/* <div className={styles.page}style={{display: "flex", minHeight: "100vh", flexDirection: "column"}}>
+        <div className={styles.page}style={{display: "flex", minHeight: "100vh", flexDirection: "column"}}>
             <div className="container">
                 <button className="button is-primary" onClick={() => router.back()}>Back</button>
                 <div>
@@ -71,37 +44,50 @@ const NewRecipe = () =>  {
                         <div className="field">
                             <label className="label">Name</label>
                             <div className="control">
-                                <input className="input" type="text" placeholder="Recipe Name"
-                                onChange={(e) => setRecipe({...recipe, name: e.target.value})} />
+                                <input className="input" 
+                                    type="text"
+                                    value={recipe.name != "" ? recipe.name : ""} 
+                                    placeholder="Recipe Name"
+                                    onChange={(e) => setRecipe({...recipe, name: e.target.value})} />
                             </div>
                         </div>
                         <div className="field">
                             <label className="label">Servings</label>
                             <div className="control">
-                                <input className="input" type="number" placeholder="How many servings? "
-                                onChange={(e) => setRecipe({...recipe, servings: parseInt(e.target.value)})} />
+                                <input className="input" 
+                                    type="number" 
+                                    value={recipe.servings != 0 ? recipe.servings : ""} 
+                                    placeholder="How many servings? "
+                                    onChange={(e) => setRecipe({...recipe, servings: parseInt(e.target.value)})} />
                             </div>
                         </div>
                         <div className="field">
                             <label className="label">Calories</label>
                             <div className="control">
-                                <input className="input" type="number" placeholder="Calories per serving? "
-                                onChange={(e) => setRecipe({...recipe, calories: parseInt(e.target.value)})} />
+                                <input className="input" 
+                                    type="number" 
+                                    value={recipe.calories != 0 ? recipe.calories : ""} 
+                                    placeholder="Calories per serving? "
+                                    onChange={(e) => setRecipe({...recipe, calories: parseInt(e.target.value)})} />
                             </div>
                         </div>
                         <div className="field">
                             <label className="label">Protein</label>
                             <div className="control">
-                                <input className="input" type="number" placeholder="Protein(g) per serving? "
-                                onChange={(e) => setRecipe({...recipe, protein: parseInt(e.target.value)})} />
+                                <input className="input" 
+                                    type="number" 
+                                    value={recipe.protein != 0 ? recipe.protein : ""} 
+                                    placeholder="Protein(g) per serving? "
+                                    onChange={(e) => setRecipe({...recipe, protein: parseInt(e.target.value)})} />
                             </div>
                         </div>                 
                         <div className="field">
                         <label className="label">Tag</label>
                         <div className="control">
                             <div className="select">
-                            <select onChange={(e) => setRecipe({...recipe, tag_id: parseInt(e.target.value)})}>
-                                <option value="">Select Tag</option>
+                            <select value={recipe.tag_id} 
+                                    onChange={(e) => setRecipe({...recipe, tag_id: parseInt(e.target.value)})}>
+                                <option value={0}>Select Tag</option>
                                 {tags.map((t, i) => <option key={i} value={t.id}>{t.name}</option>)}
                             </select>
                             </div>
@@ -110,32 +96,33 @@ const NewRecipe = () =>  {
                         <div className="field">
                             <label className="label">Ingredients</label>
                             <div className="control">
-                                <textarea className="textarea" value={recipe.ingredients} placeholder="List the Ingredients in Markdown Format" 
-                                onChange={(e) => setRecipe({...recipe, ingredients: e.target.value})} />
+                                <textarea className="textarea" 
+                                    value={recipe.ingredients} 
+                                    placeholder="List the Ingredients in Markdown Format" 
+                                    onChange={(e) => setRecipe({...recipe, ingredients: e.target.value})} />
                             </div>
                         </div>
                         <div className="field">
                             <label className="label">Instructions</label>
                             <div className="control">
-                                <textarea className="textarea" placeholder="List the Instructions in Markdown Format" 
+                                <textarea className="textarea" 
+                                value={recipe.instructions != "" ? recipe.instructions : ""}
+                                placeholder="List the Instructions in Markdown Format" 
                                 onChange={(e) => setRecipe({...recipe, instructions: e.target.value})} />
                             </div>
                         </div>
                         <div className="field">
                         <div className="control">
                             <button className="button is-link"
-                            onClick={() => handleCreateRecipe()}>Submit</button>
+                            onClick={() => props.handleRecipe(recipe)}>Submit</button>
                         </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div> */}
-        <RecipeForm handleRecipe={handleCreateRecipe} initialRecipe={baseRecipe} />
-        <Footer />
+        </div>
         </>
     )
-
 }
 
-export default NewRecipe
+export default RecipeForm

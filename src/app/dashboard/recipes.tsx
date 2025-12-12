@@ -63,7 +63,7 @@ const Recipes = () => {
                         </ul>
                         <br />
                         <nav className="level is-mobile">
-                            <button className="button">Edit</button>
+                            <button className="button" onClick={() => router.push(`/dashboard/editRecipe?id=${r.id}`)}>Edit</button>
                             <button className="button" onClick={() => {
                             setModalActive(true)
                             setModalMetaData({...modalMetaData, name: r.name, id: r.id})
