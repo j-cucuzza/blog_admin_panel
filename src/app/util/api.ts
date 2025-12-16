@@ -132,6 +132,7 @@ const getRecipe = (id: string) => {
             throw new ApiError(ApiErrors.CallFailed, err)
     })
 }
+
 const getRecipes = () => {
     const endpoint = "/recipes/all/"    
 
@@ -315,6 +316,27 @@ const getReviews = () => {
     })    
 }
 
+const getReview = (id: string) => {
+    const endpoint = `/reviews/${id}`
+
+    return fetch(`${API_ROOT}${endpoint}`, 
+        {
+            method: APIMethod.get,
+        })
+        .then(r => {
+            if (r.ok) {
+                return r.json()
+            } else if (r.status === 402) {
+                throw new ApiError(ApiErrors.LimitExceeded, "")
+            }
+            let err
+            r.json().then().then(json =>{
+                err = json
+            })
+            throw new ApiError(ApiErrors.CallFailed, err)
+    })
+}
+
 const createReview = (body: CreateReview) => {
     const endpoint = "/reviews/create/"
 
@@ -325,13 +347,13 @@ const createReview = (body: CreateReview) => {
         Authorization: "Bearer " + token
     }
 
-    const newBody = new URLSearchParams()
-    newBody.append("name", body.name)
-    newBody.append("address", body.address.toString())
-    newBody.append("visited", body.visited.toString())
-    newBody.append("rating", body.rating ? body.rating.toString() : "")
-    newBody.append("cuisine_id", body.cuisine_id.toString())
-    newBody.append("notes", body.notes)
+    // const newBody = new URLSearchParams()
+    // newBody.append("name", body.name)
+    // newBody.append("address", body.address.toString())
+    // newBody.append("visited", body.visited.toString())
+    // newBody.append("rating", body.rating ? body.rating.toString() : "")
+    // newBody.append("cuisine_id", body.cuisine_id.toString())
+    // newBody.append("notes", body.notes)
 
 
 
@@ -357,6 +379,36 @@ const createReview = (body: CreateReview) => {
 
 }
 
+const editReview = (body: CreateReview, id: string) => {
+    const endpoint = `/reviews/${id}`
+    
+    const token = sessionStorage.getItem("token")
+    const headers = {
+        'Content-Type': 'application/json',
+        accept: "application/json",
+        Authorization: "Bearer " + token
+    }
+
+    return fetch(`${API_ROOT}${endpoint}`, 
+    {
+        method: APIMethod.post,
+        headers,
+        body: JSON.stringify(body),
+    })
+    .then(r => {
+        if (r.ok) {
+            return r.json()
+        } else if (r.status === 402) {
+            throw new ApiError(ApiErrors.LimitExceeded, "")
+        }
+        let err
+        r.json().then().then(json =>{
+            err = json
+        })
+        throw new ApiError(ApiErrors.CallFailed, err)
+    })
+
+}
 
 const deleteReview = (id: number) => {
     const endpoint = `/reviews/${id}`
@@ -419,8 +471,11 @@ export {
     createRecipe,
     editRecipe,
     deleteRecipe,
+
     getReviews,
+    getReview,
     createReview,
+    editReview,
     deleteReview,
     getCuisines
 }

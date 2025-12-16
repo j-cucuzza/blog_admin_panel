@@ -102,6 +102,10 @@ const RecipeForm = (props: RecipeFormProps) => {
                                     onChange={(e) => setRecipe({...recipe, ingredients: e.target.value})} />
                             </div>
                         </div>
+                        <div className="control">
+                            <button className="button is-link is-small"
+                            onClick={() => setRecipe({...recipe, ingredients: recipe.ingredients + "\n| | | |"})}>Add Columns</button>
+                        </div>
                         <div className="field">
                             <label className="label">Instructions</label>
                             <div className="control">

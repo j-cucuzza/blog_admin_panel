@@ -32,8 +32,6 @@ const EditRecipeClient = () => {
     }, [])
 
     const handleEditRecipe = (editedR: CreateRecipe) => {
-
-        console.log(editedR)
         api.validateToken()
         .then(r => {
             if (r.error === 404) {
@@ -50,7 +48,6 @@ const EditRecipeClient = () => {
                 })
             }
         })
-        return null
     }
 
     return (
