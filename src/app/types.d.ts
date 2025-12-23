@@ -15,6 +15,7 @@ type Recipe = {
     tag_id: number,
     tag: Tag,
     id: number,
+    hidden: boolean,
 }
 
 type CreateRecipe = {
@@ -25,6 +26,7 @@ type CreateRecipe = {
     ingredients: string,
     instructions: string,
     tag_id: number,
+    hidden: boolean,
 }
 
 type Cuisine = {

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import * as api from '../util/api'
 import { useRouter } from "next/navigation"
-import { Recipe, Tag, ModalMetaData } from "../types"
+import { Recipe, Tag, ModalMetaData, CreateRecipe } from "../types"
 import DeleteModal from "./deleteModal"
 
 const defaultMetaData = {
@@ -45,6 +45,17 @@ const Recipes = () => {
             })
     }
 
+    const handleHideRecipe = (hidden: boolean, id: string) => {
+        api.hideRecipe(id, !hidden)
+            .then(r => {
+                setRecipes(recipes => recipes.map(recipe => 
+                    recipe.id.toString() === id
+                    ? { ...recipe, hidden: !hidden}
+                    : recipe
+                ))
+            })
+    }
+
     const handleRenderRecipes = () => {
         return recipes.filter((r, i) => filter === "" ? true : r.tag.name === filter).map((r, i) =>
             <div key={i} className="cell">
@@ -64,6 +75,12 @@ const Recipes = () => {
                         <br />
                         <nav className="level is-mobile">
                             <button className="button" onClick={() => router.push(`/dashboard/editRecipe?id=${r.id}`)}>Edit</button>
+                            <button   className={`button ${r.hidden ? "is-warning" : ""}`} onClick={() => handleHideRecipe(r.hidden, r.id.toString())}>Hide</button>
+                            {/* <label className="checkbox">
+                                <input type="checkbox" checked={r.hidden}
+                                onChange={() => handleHideRecipe(r.hidden, r.id.toString())}/>
+                                Hidden
+                            </label> */}
                             <button className="button" onClick={() => {
                             setModalActive(true)
                             setModalMetaData({...modalMetaData, name: r.name, id: r.id})

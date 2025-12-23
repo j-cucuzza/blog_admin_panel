@@ -197,6 +197,38 @@ const createRecipe = (body: CreateRecipe) => {
 
 }
 
+const hideRecipe = (id: string, hidden: boolean) => {
+    const endpoint = `/recipes/edit/${id}`
+
+    const token = sessionStorage.getItem("token")
+    const headers = {
+        'Content-Type': 'application/json',
+        accept: "application/json",
+        Authorization: "Bearer " + token
+    }
+
+    return fetch(`${API_ROOT}${endpoint}`, 
+    {
+        headers,
+        method: APIMethod.post,
+        body: JSON.stringify({hidden: hidden}),
+    })
+    .then(r => {
+        if (r.ok) {
+            return r.json()
+        } else if (r.status === 402) {
+            throw new ApiError(ApiErrors.LimitExceeded, "")
+        }
+        let err
+        r.json().then().then(json =>{
+            err = json
+        })
+        throw new ApiError(ApiErrors.CallFailed, err)
+    })
+
+
+}
+
 const editRecipe = (body: CreateRecipe, id: string) => {
     const endpoint = `/recipes/edit/${id}`
 
@@ -469,6 +501,7 @@ export {
     getRecipes,
     getTags,
     createRecipe,
+    hideRecipe,
     editRecipe,
     deleteRecipe,
 

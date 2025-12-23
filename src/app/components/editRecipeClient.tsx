@@ -13,6 +13,7 @@ const baseRecipe: CreateRecipe = {
     ingredients: "| Quantity | Unit | Name |\n| --- | --- | --- |\n",
     instructions: "",
     tag_id: 0,
+    hidden: false,
 }
 const EditRecipeClient = () => {
     const router = useRouter()
