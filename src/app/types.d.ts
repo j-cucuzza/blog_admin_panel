@@ -41,6 +41,7 @@ type Review = {
     id: number,
     cuisine_id: number,
     cuisine: Cuisine,
+    neighborhood: string
 }
 
 type CreateReview = {
@@ -50,6 +51,7 @@ type CreateReview = {
     rating: number | null,
     notes: string,
     cuisine_id: number,
+    neighborhood: string
 }
 
 type ModalMetaData = {

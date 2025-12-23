@@ -15,6 +15,7 @@ const baseReview: CreateReview = {
     rating: null,
     notes: "",
     cuisine_id: 0,
+    neighborhood: ""
 }
 
 const NewReview = () => {

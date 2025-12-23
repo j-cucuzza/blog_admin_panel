@@ -62,6 +62,16 @@ const ReviewForm = (props: ReviewFormProps) => {
                             </div>
                         </div>
                         <div className="field">
+                            <label className="label">Neighborhood</label>
+                            <div className="control">
+                                <input className="input" 
+                                    type="text" 
+                                    placeholder="Wicker Park"
+                                    value = {review.neighborhood != "" ? review.neighborhood : ""}
+                                onChange={(e) => setReview({...review, neighborhood: e.target.value})} />
+                            </div>
+                        </div>
+                        <div className="field">
                             <label className="label">Visited</label>
                             <div className="control">
                                 <div className="b-checkbox is-warning">
